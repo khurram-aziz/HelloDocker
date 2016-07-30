@@ -1,0 +1,8 @@
+FROM ubuntu
+MAINTAINER Khurram <khuziz@hotmail.com>
+
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y nodejs
+RUN apt-get install -y build-essential
+RUN apt-get install -y npm
