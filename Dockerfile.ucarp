@@ -1,0 +1,19 @@
+FROM debian
+MAINTAINER Khurram <khuziz@hotmail.com>
+
+RUN apt-get -qy update && apt-get -qy upgrade
+RUN apt-get -qy install software-properties-common python-software-properties build-essential g++
+RUN apt-get -qy install curl nano iputils-ping
+
+RUN apt-get -qy install ucarp
+
+ADD ucarp-run.sh /ucarp/run.sh
+ADD ucarp-ucarp.sh /ucarp/ucarp.sh
+ADD ucarp-down.sh /ucarp/down.sh
+ADD ucarp-up.sh /ucarp/up.sh
+
+RUN chmod +x /ucarp/run.sh
+RUN chmod +x /ucarp/ucarp.sh
+
+WORKDIR /ucarp
+ENTRYPOINT ["/ucarp/run.sh"]
