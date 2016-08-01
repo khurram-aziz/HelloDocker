@@ -28,7 +28,7 @@ export VIP=$1
 export PASS=$2
 shift; shift
 export IPS=$@
-export DEV=${DEV-eth1}
+export DEV=${DEV-eth0}
 
 if [ -z "$PASS" ]
 then

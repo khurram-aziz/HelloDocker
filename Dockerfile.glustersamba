@@ -1,23 +1,25 @@
-FROM ubuntu 
+FROM debian
 MAINTAINER Khurram <khuziz@hotmail.com>
 
-RUN apt-get update && apt-get -y upgrade 
-RUN apt-get -y install software-properties-common python-software-properties 
-RUN apt-get -y install libpython2.7 libaio1 libibverbs1 liblvm2app2.2 librdmacm1 fuse 
-RUN apt-get -y install curl nano 
-RUN curl -sSL https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-common_3.5.2-4_amd64.deb > glusterfs-common_3.5.2-4_amd64.deb 
-RUN curl -sSL https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-client_3.5.2-4_amd64.deb > glusterfs-client_3.5.2-4_amd64.deb 
-RUN dpkg -i glusterfs-common_3.5.2-4_amd64.deb 
-RUN dpkg -i glusterfs-client_3.5.2-4_amd64.deb
+RUN apt-get update
 
-RUN apt-get -y install samba
+ADD https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-common_3.5.2-4_amd64.deb /tmp
+ADD https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-client_3.5.2-4_amd64.deb /tmp 
 
-EXPOSE 138/udp 
-EXPOSE 139 
-EXPOSE 445 
+# glusterfs-common requirements
+# fuse and python is for glusterfs-client
+RUN apt-get -qy install libaio1 libibverbs1 liblvm2app2.2 libpython2.7 librdmacm1 libssl1.0.0 libxml2 fuse python
+RUN dpkg -i /tmp/glusterfs-common_3.5.2-4_amd64.deb
+RUN dpkg -i /tmp/glusterfs-client_3.5.2-4_amd64.deb
+
+RUN apt-get -qy install samba
+
+EXPOSE 138/udp
+EXPOSE 139
+EXPOSE 445
 EXPOSE 445/udp
 
-ADD setup.sh /setup.sh 
+ADD glustersamba-setup.sh /setup.sh
 RUN chmod +x /setup.sh
 
 CMD /setup.sh && /bin/bash

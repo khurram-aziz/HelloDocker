@@ -1,11 +1,10 @@
-FROM ubuntu:trusty
+FROM debian
 MAINTAINER Khurram <khuziz@hotmail.com>
 
-RUN apt-get update && apt-get -y upgrade
-RUN apt-get -y install openssh-server
-RUN apt-get -y install g++
-RUN apt-get -y install gdb gdbserver
-RUN apt-get -y install nano iputils-ping
+RUN apt-get update
+
+RUN apt-get -qy install openssh-server
+RUN apt-get -y install g++ gdb gdbserver
 
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' | chpasswd

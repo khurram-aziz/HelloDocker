@@ -1,9 +1,11 @@
 FROM debian
 MAINTAINER Khurram <khuziz@hotmail.com>
 
-RUN apt-get -qy update && apt-get -qy upgrade
-RUN apt-get -qy install software-properties-common python-software-properties build-essential g++
-RUN apt-get -qy install curl nano iputils-ping
+RUN apt-get update
+#RUN apt-get -qy update && apt-get -qy upgrade
+
+#RUN apt-get -qy install software-properties-common python-software-properties build-essential g++
+#RUN apt-get -qy install curl nano iputils-ping
 
 RUN apt-get -qy install ucarp
 
