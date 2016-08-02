@@ -1,0 +1,15 @@
+FROM debian
+MAINTAINER Khurram <khuziz@hotmail.com>
+
+RUN apt-get update
+
+# glusterfs-common requirements
+# fuse and python is for glusterfs-client
+RUN apt-get -qy install libaio1 libibverbs1 liblvm2app2.2 libpython2.7 librdmacm1 libssl1.0.0 libxml2 fuse python
+# additional glusterfs-common 3.7 requirement
+RUN apt-get -qy install libglib2.0-0 liburcu2 attr rsync
+
+ADD https://download.gluster.org/pub/gluster/glusterfs/3.7/3.7.3/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-common_3.7.3-1_amd64.deb /tmp
+ADD https://download.gluster.org/pub/gluster/glusterfs/3.7/3.7.3/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-client_3.7.3-1_amd64.deb /tmp 
+RUN dpkg -i /tmp/glusterfs-common_3.7.3-1_amd64.deb
+RUN dpkg -i /tmp/glusterfs-client_3.7.3-1_amd64.deb

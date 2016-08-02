@@ -3,11 +3,11 @@ MAINTAINER Khurram <khuziz@hotmail.com>
 
 RUN apt-get update
 
-ADD https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-common_3.5.2-4_amd64.deb /tmp
-ADD https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-client_3.5.2-4_amd64.deb /tmp 
-
 # glusterfs-common requirements
 # fuse and python is for glusterfs-client
 RUN apt-get -qy install libaio1 libibverbs1 liblvm2app2.2 libpython2.7 librdmacm1 libssl1.0.0 libxml2 fuse python
+
+ADD https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-common_3.5.2-4_amd64.deb /tmp
+ADD https://download.gluster.org/pub/gluster/glusterfs/3.5/3.5.2/Debian/jessie/apt/pool/main/g/glusterfs/glusterfs-client_3.5.2-4_amd64.deb /tmp 
 RUN dpkg -i /tmp/glusterfs-common_3.5.2-4_amd64.deb
 RUN dpkg -i /tmp/glusterfs-client_3.5.2-4_amd64.deb
