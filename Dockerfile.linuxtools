@@ -3,8 +3,9 @@ MAINTAINER Khurram <khuziz@hotmail.com>
 
 RUN apt-get update
 
+RUN apt-get install -qy build-essential
+RUN apt-get install -qy g++ gdb gdbserver
 RUN apt-get -qy install openssh-server
-RUN apt-get -y install g++ gdb gdbserver
 
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' | chpasswd
