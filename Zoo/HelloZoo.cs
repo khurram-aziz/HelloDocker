@@ -1,8 +1,8 @@
+using org.apache.zookeeper;
 using System;
 using System.Text;
-using org.apache.zookeeper;
 
-namespace ConsoleApplication
+namespace Zoo
 {
     class HelloZoo
     {

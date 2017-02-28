@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using org.apache.zookeeper;
 
-namespace ConsoleApplication
+namespace Zoo
 {
     class NullWatcher : Watcher
     {

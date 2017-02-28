@@ -1,0 +1,32 @@
+version: '2'
+services:
+    zoo:
+        image: zookeeper
+        restart: unless-stopped
+        environment:
+            ZOO_MY_ID: 1
+    charlie:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: dotnetapp
+        #Name timeToLeaveHome timeToRoll timeToGasStation
+        command: Charlie 10 20 25
+        links:
+            - zoo
+    mac:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: dotnetapp
+        command: Mac 10 20 35
+        links:
+            - zoo
+    dennis:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: dotnetapp
+        command: Dennis 40 20 40
+        links:
+            - zoo
