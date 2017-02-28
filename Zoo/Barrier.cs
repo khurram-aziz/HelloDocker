@@ -66,7 +66,8 @@ namespace Zoo
         public async Task<int> GetParticipantCountAsync()
         {
             var children = await this.zoo.getChildrenAsync(this.participantsNode);
-            return children.Stat.getNumChildren();
+            return children.Stat.getNumChildren(); // unenrolled nodes can still exist
+            // we should check czxid of children against barrier/rollcomplete
         }
 
         public async Task<object> ReachBarrierAsync(string participantName)
