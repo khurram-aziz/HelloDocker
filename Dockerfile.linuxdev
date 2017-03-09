@@ -1,0 +1,8 @@
+FROM debian
+MAINTAINER Khurram <khuziz@hotmail.com>
+
+RUN apt-get update
+
+RUN apt-get install -qy build-essential
+#RUN apt-get -qy install software-properties-common python-software-properties build-essential g++
+#RUN apt-get -qy install curl nano iputils-ping
