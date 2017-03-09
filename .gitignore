@@ -1,4 +1,10 @@
+/Zoo/.vscode
 /Zoo/obj
 /Zoo/bin
 /Zoo/*.log
-/Zoo/out
+/Zoo/Zoo.xproj.user
+/Zoo/output
+/Redis/.vscode
+/Redis/obj
+/Redis/bin
+/Redis/output
