@@ -78,7 +78,7 @@ namespace Redis
                 var counter = await db.StringGetAsync("hitcounter");
                 await context.Response.WriteAsync($"This page is visited {counter} times!<br>");
                 var visitors = await db.SetLengthAsync("visitor");
-                await context.Response.WriteAsync($"You are visitor #{visitors}");
+                await context.Response.WriteAsync($"We served {visitors} unique visitors!");
             });
         }
     }
