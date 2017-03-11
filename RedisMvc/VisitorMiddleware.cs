@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Redis
+namespace RedisMvc
 {
     public class VisitorMiddleware
     {

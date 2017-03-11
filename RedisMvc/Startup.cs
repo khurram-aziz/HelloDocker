@@ -12,6 +12,17 @@ namespace RedisMvc
 {
     public class Startup
     {
+        internal static StackExchange.Redis.ConnectionMultiplexer redis;
+        static Startup()
+        {
+            Startup.redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
+            {
+                //We need redis to be resolving
+                EndPoints = { { "localhost", 6379 } },
+                Password = "foobaar"
+            });
+        }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -27,6 +38,21 @@ namespace RedisMvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //http://dotnetthoughts.net/configuring-redis-for-aspnet-core-session-store/
+            //https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed
+            services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = "localhost, password=foobaar";
+                options.InstanceName = "SampleInstance";
+            });
+            //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(30);
+                options.CookieHttpOnly = true;
+                options.CookieName = ".Redis.Session";
+            });
             // Add framework services.
             services.AddMvc();
         }
@@ -48,6 +74,9 @@ namespace RedisMvc
             }
 
             app.UseStaticFiles();
+            app.UseSession();
+
+            app.UseMiddleware<VisitorMiddleware>();
 
             app.UseMvc(routes =>
             {
