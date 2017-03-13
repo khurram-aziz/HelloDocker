@@ -82,7 +82,7 @@ namespace RedisMvc
                 .SetSlidingExpiration(TimeSpan.FromSeconds(30)); // Set a short timeout for easy testing.
             cache.Set("lastServerStartTime", val, cacheEntryOptions);
 
-            app.UseVisitorMiddleware();
+            app.UseRedisVisitorMiddleware();
             app.UseStartTimeHeaderMiddleware();
 
             app.UseMvc(routes =>

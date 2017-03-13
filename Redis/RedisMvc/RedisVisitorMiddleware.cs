@@ -5,18 +5,19 @@ using Microsoft.AspNetCore.Http;
 
 namespace RedisMvc
 {
-    public static class VisitorMiddlewareExtensions
+    public static class RedisVisitorMiddlewareExtensions
     {
-        public static IApplicationBuilder UseVisitorMiddleware(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseRedisVisitorMiddleware(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<VisitorMiddleware>();
+            return builder.UseMiddleware<RedisVisitorMiddleware>();
         }
     }
 
-    public class VisitorMiddleware
+    public class RedisVisitorMiddleware
     {
         readonly RequestDelegate next;
-        public VisitorMiddleware(RequestDelegate next)
+
+        public RedisVisitorMiddleware(RequestDelegate next)
         {
             this.next = next;
         }
@@ -34,6 +35,9 @@ namespace RedisMvc
             else
                 id = Guid.Parse(context.Request.Cookies["visitor"]);
 
+            //Ideally this should use IDsitributedCache so it can be used with other
+            //distributed cache providers like SQL; but given we are using Redis Set
+            //operations; therefore this middleware directly depends on Redis
             var db = Startup.redis.GetDatabase();
             await db.SetAddAsync("visitor", id.ToString());
             
