@@ -1,9 +1,18 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
 namespace RedisMvc
 {
+    public static class VisitorMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseVisitorMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<VisitorMiddleware>();
+        }
+    }
+
     public class VisitorMiddleware
     {
         readonly RequestDelegate next;

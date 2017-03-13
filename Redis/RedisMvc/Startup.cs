@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -58,7 +57,7 @@ namespace RedisMvc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IDistributedCache cache)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -76,7 +75,15 @@ namespace RedisMvc
             app.UseStaticFiles();
             app.UseSession();
 
-            app.UseMiddleware<VisitorMiddleware>();
+            //https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed
+            var serverStartTimeString = DateTime.Now.ToString();
+            byte[] val = Encoding.UTF8.GetBytes(serverStartTimeString);
+            var cacheEntryOptions = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromSeconds(30)); // Set a short timeout for easy testing.
+            cache.Set("lastServerStartTime", val, cacheEntryOptions);
+
+            app.UseVisitorMiddleware();
+            app.UseStartTimeHeaderMiddleware();
 
             app.UseMvc(routes =>
             {
