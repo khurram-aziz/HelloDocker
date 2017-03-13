@@ -11,10 +11,10 @@ namespace RedisMvc
 {
     public class Startup
     {
-        internal static StackExchange.Redis.ConnectionMultiplexer redis;
+        internal static StackExchange.Redis.ConnectionMultiplexer Redis;
         static Startup()
         {
-            Startup.redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
+            Startup.Redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
             {
                 //We need redis to be resolving
                 EndPoints = { { "localhost", 6379 } },
@@ -81,9 +81,9 @@ namespace RedisMvc
             var cacheEntryOptions = new DistributedCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromSeconds(30)); // Set a short timeout for easy testing.
             cache.Set("lastServerStartTime", val, cacheEntryOptions);
+            app.UseStartTimeHeaderMiddleware();
 
             app.UseRedisVisitorMiddleware();
-            app.UseStartTimeHeaderMiddleware();
 
             app.UseMvc(routes =>
             {
