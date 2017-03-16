@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,14 +15,21 @@ namespace RedisMvc
     public class Startup
     {
         internal static StackExchange.Redis.ConnectionMultiplexer Redis;
+        internal static string redisIp;
         static Startup()
         {
-            Startup.Redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
+            var hostEntry = Dns.GetHostEntryAsync("redis").Result;
+            var ips =   (from ip in hostEntry.AddressList
+                        where ip.AddressFamily == AddressFamily.InterNetwork
+                        select ip.ToString()).ToList();
+            if (ips.Count > 0)
             {
-                //We need redis to be resolving
-                EndPoints = { { "localhost", 6379 } },
-                Password = "foobaar"
-            });
+                Startup.redisIp = ips[0];
+                Startup.Redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
+                {
+                    EndPoints = { { Startup.redisIp, 6379 } } //, Password = "foobaar"
+                });
+            }
         }
 
         public Startup(IHostingEnvironment env)
@@ -41,7 +51,7 @@ namespace RedisMvc
             //https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed
             services.AddDistributedRedisCache(options =>
             {
-                options.Configuration = "localhost, password=foobaar";
+                options.Configuration = Startup.redisIp; //localhost, password=foobaar";
                 options.InstanceName = "SampleInstance";
             });
             //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state

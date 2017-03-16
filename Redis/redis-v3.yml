@@ -1,0 +1,18 @@
+version: '3'
+services:
+    redis:
+        image: redis
+        #command: --appendonly yes
+    mvc:
+        image: mvcapp
+        ports:
+            - 80:80
+        depends_on: 
+            - redis
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost"]
+            interval: 1m05s
+            timeout: 10s
+            retries: 3
+        deploy:
+            mode: global

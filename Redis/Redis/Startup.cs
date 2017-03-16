@@ -17,9 +17,7 @@ namespace Redis
         {
             Startup.redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
             {
-                //We need redis to be resolving
-                EndPoints = { { "localhost", 6379 } },
-                Password = "foobaar"
+                EndPoints = { { "localhost", 6379 } }, Password = "foobaar"
             });
         }
         // This method gets called by the runtime. Use this method to add services to the container.
