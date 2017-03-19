@@ -4,9 +4,11 @@ namespace RedisMvc.Controllers
 {
     public class HomeController : Controller
     {
+        //we can use HomeController(IDistributedCache)
+        //but it will not have Redis rich data type apis; like INCR
         public IActionResult Index()
         {
-            var db = Startup.Redis.GetDatabase();
+            var db = Startup.RedisConnection.GetDatabase();
             //await db.StringIncrementAsync("hitcounter");
             db.StringIncrement("hitcounter");
             

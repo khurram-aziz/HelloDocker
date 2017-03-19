@@ -38,7 +38,7 @@ namespace RedisMvc
             //Ideally this should use IDsitributedCache so it can be used with other
             //distributed cache providers like SQL; but given we are using Redis Set
             //operations; therefore this middleware directly depends on Redis
-            var db = Startup.Redis.GetDatabase();
+            var db = Startup.RedisConnection.GetDatabase();
             await db.SetAddAsync("visitor", id.ToString());
             
             await this.next.Invoke(context);

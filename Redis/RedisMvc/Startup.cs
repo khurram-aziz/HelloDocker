@@ -9,27 +9,31 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace RedisMvc
 {
     public class Startup
     {
-        internal static StackExchange.Redis.ConnectionMultiplexer Redis;
-        internal static string redisIp;
-        static Startup()
+        static Lazy<ConnectionMultiplexer> lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
         {
+            //return ConnectionMultiplexer.Connect("redis,abortConnect=false,ssl=false");//,password=...
             var hostEntry = Dns.GetHostEntryAsync("redis").Result;
             var ips =   (from ip in hostEntry.AddressList
                         where ip.AddressFamily == AddressFamily.InterNetwork
                         select ip.ToString()).ToList();
+            Console.WriteLine("{0} ips found", ips.Count);
+            foreach(var ip in ips)
+                Console.WriteLine("{0}", ip);
             if (ips.Count > 0)
-            {
-                Startup.redisIp = ips[0];
-                Startup.Redis = StackExchange.Redis.ConnectionMultiplexer.Connect(new StackExchange.Redis.ConfigurationOptions()
-                {
-                    EndPoints = { { Startup.redisIp, 6379 } } //, Password = "foobaar"
-                });
-            }
+                return ConnectionMultiplexer.Connect(
+                    $"{ips[0]},abortConnect=false,ssl=false");
+            return null;
+        });
+
+        public static ConnectionMultiplexer RedisConnection
+        {
+            get { return lazyConnection.Value; }
         }
 
         public Startup(IHostingEnvironment env)
@@ -51,8 +55,8 @@ namespace RedisMvc
             //https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed
             services.AddDistributedRedisCache(options =>
             {
-                options.Configuration = Startup.redisIp; //localhost, password=foobaar";
-                options.InstanceName = "SampleInstance";
+                options.Configuration = Startup.RedisConnection.Configuration;
+                options.InstanceName = "RedisMvcInstance";
             });
             //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/app-state
             services.AddSession(options =>
