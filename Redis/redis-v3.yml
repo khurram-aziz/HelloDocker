@@ -2,9 +2,8 @@ version: '3'
 services:
     redis:
         image: redis
-        #command: --appendonly yes
     mvc:
-        image: mvcapp
+        image: 192.168.10.14:5000/mvcapp
         ports:
             - 80:80
         depends_on: 
