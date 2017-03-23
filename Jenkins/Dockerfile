@@ -42,4 +42,4 @@ RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 VOLUME /var/run/docker.sock
 
 USER jenkins
-#docker run --name jenk --rm -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock jen
+#docker run --name jenk --rm -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dotjenkins
