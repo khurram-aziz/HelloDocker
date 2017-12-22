@@ -1,14 +1,4 @@
-/Zoo/.vscode
-/Zoo/backup
-/Zoo/bin
-/Zoo/obj
-/Zoo/*.log
-/Zoo/output
 /Redis/Redis/.vscode
 /Redis/Redis/bin
 /Redis/Redis/obj
 /Redis/Redis/output
-/Redis/RedisMvc/.vscode
-/Redis/RedisMvc/bin
-/Redis/RedisMvc/obj
-/Redis/RedisMvc/output
