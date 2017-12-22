@@ -12,6 +12,16 @@ namespace RedisMvc2.Controllers
     {
         public IActionResult Index()
         {
+            var db = Startup.RedisConnection.GetDatabase();
+            //await db.StringIncrementAsync("hitcounter");
+            db.StringIncrement("hitcounter");
+            
+            var counter = db.StringGet("hitcounter");
+            var visitors = db.SetLength("visitor");
+
+            this.ViewData["counter"] = counter;
+            this.ViewData["visitors"] = visitors;
+            
             return View();
         }
 

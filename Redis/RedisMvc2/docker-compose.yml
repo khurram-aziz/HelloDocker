@@ -1,0 +1,17 @@
+version: '2'
+services:
+    redis:
+        image: redis
+        restart: unless-stopped
+    mvc:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: mvcapp
+        restart: unless-stopped
+        ports:
+            - 5000:80
+        links:
+            - redis
+        depends_on: 
+            - redis
