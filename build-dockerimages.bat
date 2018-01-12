@@ -8,3 +8,4 @@ docker build -t khurramaziz/linuxtools -f Dockerfile.linuxtools .
 docker build -t khurramaziz/mongo -f Dockerfile.mongo .
 docker build -t khurramaziz/node -f Dockerfile.node .
 docker build -t khurramaziz/ucarp -f Dockerfile.ucarp .
+docker build -t khurramaziz/powershell -f Dockerfile.powershel .
