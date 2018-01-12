@@ -1,5 +1,5 @@
 FROM jenkins
-MAINTAINER Khurram <khuziz@hotmail.com>
+LABEL maintainer="khuziz@hotmail.com"
 
 #jenkins image has USER jenkins; to before installing
 #lets get back to root

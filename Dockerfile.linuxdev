@@ -1,5 +1,5 @@
 FROM debian
-MAINTAINER Khurram <khuziz@hotmail.com>
+LABEL maintainer="khuziz@hotmail.com"
 
 RUN apt-get update
 
