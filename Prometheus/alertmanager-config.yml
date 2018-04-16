@@ -1,0 +1,10 @@
+route:
+  receiver: 'slack'
+receivers:
+  - name: 'slack'
+    slack_configs:
+      - send_resolved: true
+        username: 'Prometheus'
+        channel: '#YourChannel'
+        text: 'app={{ .GroupLabels.app }}, alertname={{ .GroupLabels.alertname }}, summary={{ .CommonAnnotations.summary }}, description={{ .CommonAnnotations.description }}'
+        api_url: 'https://hooks.slack.com/services/xxxxxx' # Get your webhook url from https://slack.com/apps/A0F7XDUAZ-incoming-webhooks

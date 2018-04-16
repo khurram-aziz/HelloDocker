@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net4Console", "Net4Console\Net4Console.csproj", "{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BAB2402E-6305-408F-9296-F8A1C68CDE7B}"
+	ProjectSection(SolutionItems) = preProject
+		alertmanager-config.yml = alertmanager-config.yml
+		alertrules.yml = alertrules.yml
+		docker-compose.yml = docker-compose.yml
+		grafana-datasource.yml = grafana-datasource.yml
+		prometheus.yml = prometheus.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dashboards", "dashboards", "{8258FC8B-2446-44B6-84E2-A36603742358}"
+	ProjectSection(SolutionItems) = preProject
+		dashboards\dashboard.yml = dashboards\dashboard.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8258FC8B-2446-44B6-84E2-A36603742358} = {BAB2402E-6305-408F-9296-F8A1C68CDE7B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {111AD899-0F32-45E5-9FA9-839ECBD4BA2A}
+	EndGlobalSection
+EndGlobal

@@ -5,3 +5,7 @@
 /Redis/RedisMvc/obj
 /Redis/RedisMvc2/obj
 /Zoo/obj
+/Prometheus/.vs
+/Prometheus/packages
+/Prometheus/Net4Console/bin
+/Prometheus/Net4Console/obj
