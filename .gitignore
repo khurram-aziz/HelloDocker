@@ -9,3 +9,5 @@
 /Prometheus/packages
 /Prometheus/Net4Console/bin
 /Prometheus/Net4Console/obj
+/Prometheus/NetCoreConsole/bin
+/Prometheus/NetCoreConsole/obj

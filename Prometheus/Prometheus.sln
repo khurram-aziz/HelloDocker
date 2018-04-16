@@ -17,7 +17,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dashboards", "dashboards", "{8258FC8B-2446-44B6-84E2-A36603742358}"
 	ProjectSection(SolutionItems) = preProject
 		dashboards\dashboard.yml = dashboards\dashboard.yml
+		dashboards\first.json = dashboards\first.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreConsole", "NetCoreConsole\NetCoreConsole.csproj", "{7D2A9761-E5DC-47E6-B655-6337E3977DF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +32,10 @@ Global
 		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7C2C648-E28B-4255-B0D2-BDFE32CBBDEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D2A9761-E5DC-47E6-B655-6337E3977DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D2A9761-E5DC-47E6-B655-6337E3977DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D2A9761-E5DC-47E6-B655-6337E3977DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D2A9761-E5DC-47E6-B655-6337E3977DF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
