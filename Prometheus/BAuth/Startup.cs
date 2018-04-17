@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Formix.Authentication.Basic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Security.Claims;
 
 namespace BAuth
 {
@@ -24,6 +23,18 @@ namespace BAuth
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseBasicAuthentication(creds =>
+            {
+                Console.WriteLine("Authenticating User={0}", creds.UserName);
+                if (creds.UserName == "khurram" || creds.Password == "khurram")
+                {
+                    Console.WriteLine(" Successful");
+                    return new ClaimsPrincipal(new[] { new ClaimsIdentity(new[]
+                    { new Claim(ClaimTypes.Name, creds.UserName)  }, "custom-auth-type") });
+                }
+                return null;
+            }, "custom-realm", 3000);
 
             app.Run(async (context) =>
             {
