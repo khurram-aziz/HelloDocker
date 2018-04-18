@@ -29,12 +29,7 @@ services:
     restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
-      - GF_USERS_ALLOW_SIGN_UP=true
-      - GF_AUTH_BASIC_ENABLED=false
-      - GF_AUTH_PROXY_ENABLED=true
-      - GF_AUTH_PROXY_HEADER_NAME=X-WEBAUTH-USER
-      - GF_AUTH_PROXY_HEADER_PROPERTY=username
-      - GF_AUTH_PROXY_AUTO_SIGN_UP=true
+      - GF_USERS_ALLOW_SIGN_UP=false
     links:
       - prometheus
     depends_on:
@@ -44,28 +39,3 @@ services:
       - ./dashboards:/etc/grafana/provisioning/dashboards
     ports:
       - 90:3000
-  netcoreconsole:
-    build:
-      context: NetCoreConsole/
-    image: netcoreconsole
-    restart: unless-stopped
-  bauth:
-    build:
-      context: ../BAuth/
-    image: bauth
-    restart: unless-stopped
-    # ports:
-    #   - "81:80"
-  nginx:
-    image: nginx
-    restart: unless-stopped
-    links:
-      - grafana
-      - bauth
-    depends_on:
-      - bauth
-    #command: [nginx-debug, '-g', 'daemon off;']
-    volumes:
-      - "./nginx.conf:/etc/nginx/conf.d/default.conf"
-    ports:
-      - "80:80"

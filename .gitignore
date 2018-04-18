@@ -1,3 +1,6 @@
+/.vscode
+/BAuth/bin
+/BAuth/obj
 /Prometheus/.vscode
 /Prometheus/.vs
 /Prometheus/packages
@@ -5,8 +8,6 @@
 /Prometheus/Net4Console/obj
 /Prometheus/NetCoreConsole/bin
 /Prometheus/NetCoreConsole/obj
-/Prometheus/BAuth/bin
-/Prometheus/BAuth/obj
 /Redis/Redis/.vscode
 /Redis/Redis/bin
 /Redis/Redis/obj
