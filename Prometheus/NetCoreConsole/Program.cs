@@ -37,19 +37,22 @@ namespace NetCoreConsole
 
             var thread = new Thread(new ThreadStart(() =>
             {
-                //gauge.Set(new Random().Next(0, 1000));
-                //counter.Inc();
-                //gauge.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(new Random(Environment.TickCount).Next(0, 1000));
-                //OS Entropy
-                using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
+                do
                 {
-                    byte[] rno = new byte[5];
-                    rg.GetBytes(rno);
-                    int random = BitConverter.ToInt32(rno, 0);
-                    gauge.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(random);
-                }
-                counter.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Inc();
-                Thread.Sleep(1000);
+                    //gauge.Set(new Random().Next(0, 1000));
+                    //counter.Inc();
+                    //gauge.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(new Random(Environment.TickCount).Next(0, 1000));
+                    //OS Entropy
+                    using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
+                    {
+                        byte[] rno = new byte[5];
+                        rg.GetBytes(rno);
+                        int random = BitConverter.ToInt32(rno, 0);
+                        gauge.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(random);
+                    }
+                    counter.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Inc();
+                    Thread.Sleep(1000);
+                } while (Program.keepRunning);
             }));
 
             var label = Metrics.CreateGauge("machine", "some help about this", new GaugeConfiguration()
