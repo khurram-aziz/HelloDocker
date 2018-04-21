@@ -16,6 +16,8 @@ services:
     # v3 compose / stack deploy doesnt support host networking / host pid
     # Mounting required paths for node-exporter
     # https://github.com/vegasbrianc/prometheus/blob/master/docker-stack.yml
+    ports:
+      - 9100:9100
   alertmanager:
     image: quay.io/prometheus/alertmanager
     deploy:
