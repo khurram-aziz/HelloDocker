@@ -11,7 +11,7 @@ Use docker-compose up --build for single host deployment
 - Nginx will be setup @ http://localhost reverse proxying Grafana with Basic Authentication; magic master password is khurram for any login
 
 ## docker-compose.no-dotnet.yml
-Use this with docker-compose with -f docker-compose.no-dotnet.yml argument; if you dont want to download .NET SDK/Runtime Docker images
+Use this with docker-compose (-f docker-compose.no-dotnet.yml) if you dont want to download .NET SDK/Runtime Docker images
 
 - Edit prometheus.yml according to your Docker Host / VM; also remove netcoreconsole monitoring
 - There will be no Nginx/Basic Authentication; Grafana with admin/foobar administrative credentials will be @ http://localhost; you can change in the YML
@@ -19,6 +19,10 @@ Use this with docker-compose with -f docker-compose.no-dotnet.yml argument; if y
 ## docker-compose.v3.yml
 Use with docker swarm (docker stack deploy)
 
+- Change netcoreconsole and bauth image names according to your registry
+- Change extra hosts settings according to your swarm
 - Will deploy node-exporter and netcoreconsole globally
-- Will deploy prometheus, alertmanager, grafana, bauth and nginx on swarm manager
+- Will deploy one instance of alertmanager and bauth each
+- Will deploy prometheus, grafana and nginx on swarm manager
+- You will be able to access grafana @ http://swarm-manager behind nginx with basic auth; raw grafana @ http://swarm-manager:90 and prometheus @ http://swarm-manager:91
 - Look for "machine" metric; it will have name label giving you all the container host names of netcoreconsole

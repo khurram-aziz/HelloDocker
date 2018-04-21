@@ -4,9 +4,6 @@ services:
     image: quay.io/prometheus/node-exporter
     deploy:
       mode: global
-    # v3 compose / stack deploy doesnt support host networking / host pid
-    # Mounting required paths for node-exporter
-    # https://github.com/vegasbrianc/prometheus/blob/master/docker-stack.yml
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -16,11 +13,16 @@ services:
       - '--path.sysfs=/host/sys'
       - --collector.filesystem.ignored-mount-points
       - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    # v3 compose / stack deploy doesnt support host networking / host pid
+    # Mounting required paths for node-exporter
+    # https://github.com/vegasbrianc/prometheus/blob/master/docker-stack.yml
   alertmanager:
     image: quay.io/prometheus/alertmanager
     deploy:
-      placement:
-        constraints: [node.role == manager]
+      mode: replicated
+      replicas: 1
+      # placement:
+      #   constraints: [node.role == manager]
     volumes:
       - ./alertmanager-config.yml:/etc/alertmanager/config.yml
   prometheus:
@@ -28,11 +30,15 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    extra_hosts:
+      - "swarm1:192.168.10.14"
+      - "swarm2:192.168.10.15"
+      - "swarm3:192.168.10.16"
     depends_on:
       - node-exporter
       - alertmanager
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.v3.yml:/etc/prometheus/prometheus.yml
       - ./alertrules.yml:/etc/prometheus/alertrules.yml
     ports:
       - 91:9090
@@ -57,18 +63,20 @@ services:
     ports:
       - 90:3000
   netcoreconsole:
+    image: 192.168.10.14:5000/netcoreconsole
     # we cant build this image in v3 compose / stack deploy; build it yourself first and push to some registry
     # http://weblogs.com.pk/khurram/archive/2017/03/21/docker-registry.aspx
-    image: 192.168.10.14:5000/netcoreconsole
     deploy:
       mode: global
   bauth:
+    image: 192.168.10.14:5000/bauth
     # we cant build this image in v3 compose / stack deploy; build it yourself first and push to some registry
     # http://weblogs.com.pk/khurram/archive/2017/03/21/docker-registry.aspx
-    image: 192.168.10.14:5000/bauth
     deploy:
-      placement:
-        constraints: [node.role == manager]
+      # placement:
+      #   constraints: [node.role == manager]
+      mode: replicated
+      replicas: 1
   nginx:
     image: nginx
     deploy:

@@ -1,6 +1,7 @@
 ﻿using Prometheus;
 using System;
 using System.Runtime.Loader;
+using System.Security.Cryptography;
 using System.Threading;
 
 namespace NetCoreConsole
@@ -25,13 +26,29 @@ namespace NetCoreConsole
             AssemblyLoadContext.Default.Unloading += SigTermEventHandler; //register sigterm event handler. Don't forget to import System.Runtime.Loader!
             Console.CancelKeyPress += CancelHandler; //register sigint event handler
 
-            var counter = Metrics.CreateCounter("custom_counter", "some help about this");
-            var gauge = Metrics.CreateGauge("custom_gauge", "some help about this");
+            var counter = Metrics.CreateCounter("custom_counter", "some help about this", new CounterConfiguration()
+            {
+                LabelNames = new[] { "name", "os" }
+            });
+            var gauge = Metrics.CreateGauge("custom_gauge", "some help about this", new GaugeConfiguration()
+            {
+                LabelNames = new[] { "name", "os" }
+            });
 
             var thread = new Thread(new ThreadStart(() =>
             {
-                gauge.Set(new Random().Next(0, 1000));
-                counter.Inc();
+                //gauge.Set(new Random().Next(0, 1000));
+                //counter.Inc();
+                //gauge.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(new Random(Environment.TickCount).Next(0, 1000));
+                //OS Entropy
+                using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
+                {
+                    byte[] rno = new byte[5];
+                    rg.GetBytes(rno);
+                    int random = BitConverter.ToInt32(rno, 0);
+                    gauge.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(random);
+                }
+                counter.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Inc();
                 Thread.Sleep(1000);
             }));
 
