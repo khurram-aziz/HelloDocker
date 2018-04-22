@@ -1,4 +1,18 @@
-version: '3'
+version: '3.3'
+configs:
+  # https://docs.docker.com/engine/swarm/configs
+  alertmanagerconfig:
+    file: ./alertmanager-config.yml
+  prometheusconfig:
+    file: ./prometheus.v3.yml
+  alertrulesconfig:
+    file: ./alertrules.yml
+  grafanadatasourceconfig:
+    file: ./grafana-datasource.yml
+  grafanadashboardconfig:
+    file: ./dashboards/dashboard.yml
+  grafanajsonfirst:
+    file: ./dashboards/first.json
 services:
   nodeexporter:
     image: quay.io/prometheus/node-exporter
@@ -19,31 +33,30 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        # constraints: [node.role == worker]
-        # due to volume; we cant deploy on worker unless we make the required files availables on all
-        # workers (and we might need to provide absolute path)
-        constraints: [node.role == manager]
-    volumes:
-      - ./alertmanager-config.yml:/etc/alertmanager/config.yml
+        constraints: [node.role == worker]
+    configs:
+      - source: alertmanagerconfig
+        target: /etc/alertmanager/config.yml
+        # https://docs.docker.com/compose/compose-file/#long-syntax
   prometheus:
     image: quay.io/prometheus/prometheus
     deploy:
       mode: replicated
       replicas: 1
       placement:
-        # constraints: [node.role == worker]
-        constraints: [node.role == manager]
-    volumes:
-      - ./prometheus.v3.yml:/etc/prometheus/prometheus.yml
-      - ./alertrules.yml:/etc/prometheus/alertrules.yml
+        constraints: [node.role == worker]
+    configs:
+      - source: prometheusconfig
+        target: /etc/prometheus/prometheus.yml
+      - source: alertrulesconfig
+        target: /etc/prometheus/alertrules.yml
   grafana:
     image: grafana/grafana
     deploy:
       mode: replicated
       replicas: 1
       placement:
-        # constraints: [node.role == worker]
-        constraints: [node.role == manager]
+        constraints: [node.role == worker]
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
       - GF_USERS_ALLOW_SIGN_UP=true
@@ -52,9 +65,13 @@ services:
       - GF_AUTH_PROXY_HEADER_NAME=X-WEBAUTH-USER
       - GF_AUTH_PROXY_HEADER_PROPERTY=username
       - GF_AUTH_PROXY_AUTO_SIGN_UP=true
-    volumes:
-      - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
-      - ./dashboards:/etc/grafana/provisioning/dashboards
+    configs:
+      - source: grafanadatasourceconfig
+        target: /etc/grafana/provisioning/datasources/datasource.yml
+      - source: grafanadashboardconfig
+        target: /etc/grafana/provisioning/dashboards/dashboard.yml
+      - source: grafanajsonfirst
+        target: /etc/grafana/provisioning/dashboards/first.json
   netcoreconsole:
     image: 192.168.10.14:5000/netcoreconsole
     # we cant build this image in v3 compose / stack deploy; build it yourself first and push to some registry
@@ -75,5 +92,8 @@ services:
         constraints: [node.role == manager]
     volumes:
       - "./nginx.v3.conf:/etc/nginx/conf.d/default.conf"
+    # given its going to be on manager; we can continue to use volume
     ports:
-      - "80:80"
+      - "80:80"   # grafana /w bauth
+      - "90:90"   # grafana
+      - "91:91"   # prometheus
