@@ -1,6 +1,6 @@
 version: '2'
 services:
-  node-exporter:
+  nodeexporter:
     image: quay.io/prometheus/node-exporter
     restart: unless-stopped
     pid: host
