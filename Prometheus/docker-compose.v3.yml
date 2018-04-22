@@ -19,7 +19,10 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == worker]
+        # constraints: [node.role == worker]
+        # due to volume; we cant deploy on worker unless we make the required files availables on all
+        # workers (and we might need to provide absolute path)
+        constraints: [node.role == manager]
     volumes:
       - ./alertmanager-config.yml:/etc/alertmanager/config.yml
   prometheus:
@@ -28,7 +31,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == worker]
+        # constraints: [node.role == worker]
+        constraints: [node.role == manager]
     volumes:
       - ./prometheus.v3.yml:/etc/prometheus/prometheus.yml
       - ./alertrules.yml:/etc/prometheus/alertrules.yml
@@ -38,7 +42,8 @@ services:
       mode: replicated
       replicas: 1
       placement:
-        constraints: [node.role == worker]
+        # constraints: [node.role == worker]
+        constraints: [node.role == manager]
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
       - GF_USERS_ALLOW_SIGN_UP=true
