@@ -21,24 +21,16 @@ scrape_configs:
   - targets:
     - localhost:9090
 - job_name: node
-  static_configs:
-  - targets:
-    - swarm1:9100
-    - swarm2:9100
-    - swarm3:9100
-#- job_name: wmi
-#  static_configs:
-#  - targets:
-#    - windows-server1-running-wmi-exporter:9182
-#    - windows-server2-running-wmi-exporter:9182
+  dns_sd_configs:
+    - names:
+      - 'tasks.nodeexporter'
+      type: 'A'
+      port: 9100
+      # https://docs.docker.com/docker-cloud/apps/service-links
 - job_name: custom
   metrics_path: /metrics
-  # static_configs:
-  # - targets:
-  #   - netcoreconsole:8000
   dns_sd_configs:
     - names:
       - 'tasks.netcoreconsole'
-      # https://docs.docker.com/docker-cloud/apps/service-links
       type: 'A'
       port: 8000

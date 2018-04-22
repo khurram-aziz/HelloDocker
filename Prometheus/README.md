@@ -22,7 +22,6 @@ Use with docker swarm (docker stack deploy)
 - Change netcoreconsole and bauth image names according to your registry
 - Change extra hosts settings according to your swarm
 - Will deploy node-exporter and netcoreconsole globally
-- Will deploy one instance of alertmanager and bauth each
-- Will deploy prometheus, grafana and nginx on swarm manager
-- You will be able to access grafana @ http://swarm-manager behind nginx with basic auth; raw grafana @ http://swarm-manager:90 and prometheus @ http://swarm-manager:91
-- Look for "machine" metric; it will have name label giving you all the container host names of netcoreconsole
+- Will deploy one instance of alertmanager, prometheus, grafana and bauth each
+- Will deploy nginx on swarm manager
+- You will be able to access grafana @ http://swarm-manager behind nginx with basic auth; and raw grafana @ http://swarm-manager:90
