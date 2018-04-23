@@ -27,6 +27,12 @@ scrape_configs:
       type: 'A'
       port: 9100
       # https://docs.docker.com/docker-cloud/apps/service-links
+- job_name: docker-metrics # https://docs.docker.com/config/thirdparty/prometheus
+  static_configs:
+  - targets:
+      - 'swarm1:9323'
+      - 'swarm2:9323'
+      - 'swarm3:9323'
 - job_name: custom
   metrics_path: /metrics
   dns_sd_configs:

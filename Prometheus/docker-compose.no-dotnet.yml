@@ -1,6 +1,6 @@
 version: '2'
 services:
-  node-exporter:
+  nodeexporter:
     image: quay.io/prometheus/node-exporter
     restart: unless-stopped
     pid: host
@@ -14,10 +14,10 @@ services:
     image: quay.io/prometheus/prometheus
     restart: unless-stopped
     links:
-      - node-exporter
+      - nodeexporter
       - alertmanager
     depends_on:
-      - node-exporter
+      - nodeexporter
       - alertmanager
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
