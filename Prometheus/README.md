@@ -16,12 +16,12 @@ Use this with docker-compose (-f docker-compose.no-dotnet.yml) if you dont want 
 - Edit prometheus.yml according to your Docker Host / VM; also remove netcoreconsole monitoring
 - There will be no Nginx/Basic Authentication; Grafana with admin/foobar administrative credentials will be @ http://localhost; you can change in the YML
 
-## docker-compose.v3.yml
+## docker-stack.yml
 Use with docker swarm (docker stack deploy)
 
 - Change netcoreconsole and bauth image names according to your registry
-- Change extra hosts settings according to your swarm
+- Change extra hosts settings under prometheus service according to your swarm nodes
 - Will deploy node-exporter and netcoreconsole globally
 - Will deploy one instance of alertmanager, prometheus, grafana and bauth each
 - Will deploy nginx on swarm manager
-- You will be able to access grafana @ http://swarm-manager behind nginx with basic auth; and raw grafana @ http://swarm-manager:90
+- You will be able to access grafana @ http://swarm-manager behind nginx with basic auth; raw grafana @ http://swarm-manager:90 and prometheus @ http://swarm-manager:91
