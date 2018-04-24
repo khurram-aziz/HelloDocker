@@ -62,7 +62,9 @@ namespace NetCoreConsole
             label.WithLabels(Environment.MachineName, Environment.OSVersion.ToString()).Set(1);
 
             var metricServer = new MetricServer(port: 8000); //by default it publishes at /metrics
+            var metricPusher = new MetricPusher("http://pushgateway:9091/metrics", job: Environment.MachineName);
             metricServer.Start();
+            metricPusher.Start();
 
             thread.Start();
 

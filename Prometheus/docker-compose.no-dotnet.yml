@@ -10,32 +10,35 @@ services:
     restart: unless-stopped
     volumes:
       - ./alertmanager-config.yml:/etc/alertmanager/config.yml
+    ports:
+      - 93:9093
+  pushgateway:
+    image: prom/pushgateway
+    restart: unless-stopped
+    ports:
+      - 91:9091
   prometheus:
     image: quay.io/prometheus/prometheus
     restart: unless-stopped
-    links:
-      - nodeexporter
-      - alertmanager
     depends_on:
       - nodeexporter
       - alertmanager
+      - pushgateway
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - ./alertrules.yml:/etc/prometheus/alertrules.yml
     ports:
-      - 91:9090
+      - 90:9090
   grafana:
     image: grafana/grafana
     restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
       - GF_USERS_ALLOW_SIGN_UP=false
-    links:
-      - prometheus
     depends_on:
       - prometheus
     volumes:
       - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./dashboards:/etc/grafana/provisioning/dashboards
     ports:
-      - 90:3000
+      - 80:3000
