@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+
+  # http://nginx.org/en/docs/http/ngx_http_js_module.html
+  nginx:
+    build:
+      context: .
+    image: nginscript
+    restart: unless-stopped
+    #command: [nginx-debug, '-g', 'daemon off;']
+    volumes:
+      - ./http.js:/etc/nginx/http.js
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
