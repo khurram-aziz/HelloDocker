@@ -1,25 +1,42 @@
-version: '2'
+version: '3.5'
+
+networks:
+  frontend:
+  backend:
+  shared-backend:
+    name: shared-backend
+
 services:
+
   nodeexporter:
     image: quay.io/prometheus/node-exporter
     restart: unless-stopped
     pid: host
     network_mode: host
+
   alertmanager:
     image: quay.io/prometheus/alertmanager
     restart: unless-stopped
+    networks:
+      - backend
     volumes:
       - ./alertmanager-config.yml:/etc/alertmanager/config.yml
     # ports:
     #   - 9093:9093
+
   pushgateway:
     image: prom/pushgateway
     restart: unless-stopped
+    networks:
+      - backend
     # ports:
     #   - 9091:9091
+
   prometheus:
     image: quay.io/prometheus/prometheus
     restart: unless-stopped
+    networks:
+      - backend
     depends_on:
       - nodeexporter
       - alertmanager
@@ -29,9 +46,12 @@ services:
       - ./alertrules.yml:/etc/prometheus/alertrules.yml
     # ports:
     #   - 91:9090
+
   grafana:
     image: grafana/grafana
     restart: unless-stopped
+    networks:
+      - backend
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
       - GF_USERS_ALLOW_SIGN_UP=true
@@ -47,21 +67,32 @@ services:
       - ./dashboards:/etc/grafana/provisioning/dashboards
     # ports:
     #   - 90:3000
+
   netcoreconsole:
     build:
       context: NetCoreConsole/
     image: netcoreconsole
     restart: unless-stopped
+    networks:
+      - backend
+
   bauth:
     build:
       context: ../BAuth/
     image: bauth
     restart: unless-stopped
+    networks:
+      - shared-backend
     # ports:
     #   - "81:80"
+
   nginx:
     image: nginx
     restart: unless-stopped
+    networks:
+      - frontend
+      - backend
+      - shared-backend
     depends_on:
       - bauth
       - pushgateway
