@@ -33,8 +33,8 @@ function baz(req, res) {
     res.contentType = "text/plain; charset=utf-8";
     res.contentLength = 15;
     res.sendHeader();
-    res.send("nginx");
-    res.send("java");
+    res.send("nginx\n");
+    res.send("java\n");
     res.send("script");
 
     res.finish();
