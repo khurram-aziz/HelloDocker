@@ -1,10 +1,10 @@
-version: '3.5'
+version: '3.5' # 3.5 for network/middletier external / static name
 
 networks:
-  frontend:
-  backend:
-  shared-backend:
-    name: shared-backend
+  fronttier:
+  middletier:
+    name: middletier
+  backtier:
 
 services:
 
@@ -14,29 +14,34 @@ services:
     pid: host
     network_mode: host
 
+  # middletier (nginx)
   alertmanager:
     image: quay.io/prometheus/alertmanager
     restart: unless-stopped
     networks:
-      - backend
+      - middletier
     volumes:
       - ./alertmanager-config.yml:/etc/alertmanager/config.yml
     # ports:
     #   - 9093:9093
 
+  # backtier, middletier (nginx)
   pushgateway:
     image: prom/pushgateway
     restart: unless-stopped
     networks:
-      - backend
+      - backtier
+      - middletier
     # ports:
     #   - 9091:9091
 
+  # backtier, middletier (nginx)
   prometheus:
     image: quay.io/prometheus/prometheus
     restart: unless-stopped
     networks:
-      - backend
+      - backtier
+      - middletier
     depends_on:
       - nodeexporter
       - alertmanager
@@ -47,11 +52,12 @@ services:
     # ports:
     #   - 91:9090
 
+  # middletier (nginx)
   grafana:
     image: grafana/grafana
     restart: unless-stopped
     networks:
-      - backend
+      - middletier
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
       - GF_USERS_ALLOW_SIGN_UP=true
@@ -65,34 +71,37 @@ services:
     volumes:
       - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./dashboards:/etc/grafana/provisioning/dashboards
+      - ./dashboards/first.json:/etc/grafana/provisioning/dashboards/first.json
     # ports:
     #   - 90:3000
 
+  # backtier
   netcoreconsole:
     build:
       context: NetCoreConsole/
     image: netcoreconsole
     restart: unless-stopped
     networks:
-      - backend
+      - backtier
 
+  # middletier (nginx)
   bauth:
     build:
       context: ../BAuth/
     image: bauth
     restart: unless-stopped
     networks:
-      - shared-backend
+      - middletier
     # ports:
     #   - "81:80"
 
+  # fronttier (ports), middletier
   nginx:
     image: nginx
     restart: unless-stopped
     networks:
-      - frontend
-      - backend
-      - shared-backend
+      - fronttier
+      - middletier
     depends_on:
       - bauth
       - pushgateway

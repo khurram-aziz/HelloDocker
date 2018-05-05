@@ -1,4 +1,5 @@
 version: '3.3'
+
 configs:
   # https://docs.docker.com/engine/swarm/configs
   alertmanagerconfig:
@@ -15,7 +16,9 @@ configs:
     file: ./dashboards/first.json
   nginxconfig:
     file: ./nginx.conf
+
 services:
+
   nodeexporter:
     image: quay.io/prometheus/node-exporter
     deploy:
@@ -29,6 +32,7 @@ services:
       - '--path.sysfs=/host/sys'
       - --collector.filesystem.ignored-mount-points
       - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+
   alertmanager:
     image: quay.io/prometheus/alertmanager
     deploy:
@@ -40,6 +44,7 @@ services:
       - source: alertmanagerconfig
         target: /etc/alertmanager/config.yml
         # https://docs.docker.com/compose/compose-file/#long-syntax
+
   prometheus:
     image: quay.io/prometheus/prometheus
     deploy:
@@ -56,6 +61,7 @@ services:
         target: /etc/prometheus/prometheus.yml
       - source: alertrulesconfig
         target: /etc/prometheus/alertrules.yml
+
   grafana:
     image: grafana/grafana
     deploy:
@@ -78,12 +84,14 @@ services:
         target: /etc/grafana/provisioning/dashboards/dashboard.yml
       - source: grafanajsonfirst
         target: /etc/grafana/provisioning/dashboards/first.json
+
   netcoreconsole:
     image: 192.168.10.14:5000/netcoreconsole
     # we cant build this image in v3 compose / stack deploy; build it yourself first and push to some registry
     # http://weblogs.com.pk/khurram/archive/2017/03/21/docker-registry.aspx
     deploy:
       mode: global
+
   bauth:
     image: 192.168.10.14:5000/bauth
     deploy:
@@ -91,6 +99,7 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == worker]
+
   nginx:
     image: nginx
     deploy:
