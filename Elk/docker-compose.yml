@@ -1,33 +1,36 @@
 version: '3.5'
 
 networks:
-  frontend:
-  backend:
-  shared-backend:
-    name: shared-backend
+  fronttier:
+  middletier:
+    name: middletier
+  backtier:
 
 volumes:
   elasticsearch: {}
 
 services:
 
+  # backtier, middletier (nginx)
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
     restart: unless-stopped
     networks:
-      - backend
+      - backtier
+      - middletier
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     # ports:
     #   - "9200:9200"
 
+  # fronttier (ports), backtier
   logstash:
     image: docker.elastic.co/logstash/logstash-oss:6.2.4
     restart: unless-stopped
     networks:
-      - frontend
-      - backend
+      - fronttier
+      - backtier
     depends_on:
       - elasticsearch
     volumes:
@@ -38,36 +41,39 @@ services:
       - "5000:5000"
       - "5000:5000/udp"
   
+  # middletier (nginx)
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.2.4
     restart: unless-stopped
     networks:
-      - backend
+      - middletier
     depends_on:
       - elasticsearch
     # ports:
     #   - "5601:5601"
 
+  # middletier (nginx)
   bauth:
     build:
       context: ../BAuth/
     image: bauth
     restart: unless-stopped
     networks:
-      - shared-backend
+      - middletier
     # ports:
     #   - "80:80"
 
+  # fronttier (ports), middletier
   nginx:
     image: nginx
     restart: unless-stopped
     networks:
-      - frontend
-      - backend
-      - shared-backend
+      - fronttier
+      - middletier
     depends_on:
       - bauth
       - elasticsearch
+      - kibana
     #command: [nginx-debug, '-g', 'daemon off;']
     volumes:
       - "./nginx.conf:/etc/nginx/conf.d/default.conf"

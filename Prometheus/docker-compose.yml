@@ -25,12 +25,11 @@ services:
     # ports:
     #   - 9093:9093
 
-  # backtier, middletier (nginx)
+  # middletier (nginx)
   pushgateway:
     image: prom/pushgateway
     restart: unless-stopped
     networks:
-      - backtier
       - middletier
     # ports:
     #   - 9091:9091
