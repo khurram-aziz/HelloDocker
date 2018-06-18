@@ -1,0 +1,30 @@
+version: '2.0'
+
+services:
+
+  zookeeper:
+    image: zookeeper
+    restart: unless-stopped
+  
+  kafka:
+    build:
+      context: KafkaServer/
+    image: khurramaziz/kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    # https://kafka.apache.org/quickstart
+    volumes:
+      - ./kafka-server.properties:/config/server.properties
+    entrypoint:
+      - /kafka/bin/kafka-server-start.sh
+      - /config/server.properties
+  
+  kafkaapp:
+    build:
+      context: KafkaNetCoreConsole/
+    image: khurramaziz/kafkaapp
+    restart: unless-stopped
+    # command: producer
+    depends_on:
+      - kafka

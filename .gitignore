@@ -1,6 +1,11 @@
 /.vscode
 /BAuth/bin
 /BAuth/obj
+/Kafka/.vs
+/Kafka/KafkaServer/kafka_2.11-1.1.0.tgz
+/Kafka/KafkaNetCoreConsole/.vs
+/Kafka/KafkaNetCoreConsole/bin
+/Kafka/KafkaNetCoreConsole/obj
 /Prometheus/.vscode
 /Prometheus/.vs
 /Prometheus/packages
