@@ -21,6 +21,9 @@ services:
       - /config/server.properties
   
   kafkaapp:
+    # https://www.codeguru.com/csharp/.net/producer-and-consumer-for-kafka-in-.net-an-exploration.html
+    # https://www.infoworld.com/article/3215165/application-development/how-to-use-apache-kafka-messaging-in-net.html
+    # https://www.hugopicado.com/2017/11/22/getting-started-with-net-core-and-kafka.html
     build:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp

@@ -8,6 +8,7 @@ namespace KafkaNetCoreConsole
 {
     class Program
     {
+        //Not using https://github.com/Microsoft/CSharpClient-for-Kafka
         static void producer()
         {
             var options = new KafkaOptions(new Uri("http://kafka:9092"));
