@@ -2,43 +2,99 @@
 using KafkaNet.Model;
 using KafkaNet.Protocol;
 using System;
+using System.Runtime.Loader;
 using System.Text;
+using System.Threading;
 
 namespace KafkaNetCoreConsole
 {
+    class MyPartition : IPartitionSelector
+    {
+		Partition p = null;
+
+		public MyPartition(int partitionId)
+		{
+			this.p = new Partition();
+			p.PartitionId = partitionId;
+		}
+        public Partition Select(Topic topic, byte[] key)
+        {
+            return this.p;
+        }
+    }
+
+    //Not using https://github.com/Microsoft/CSharpClient-for-Kafka
     class Program
     {
-        //Not using https://github.com/Microsoft/CSharpClient-for-Kafka
-        static void producer()
+		static bool keepRunning = true;
+
+		static void SigTermEventHandler(AssemblyLoadContext obj)
         {
-            var options = new KafkaOptions(new Uri("http://kafka:9092"));
-            var router = new BrokerRouter(options);
-            var client = new Producer(router);
-            client.SendMessageAsync("testtopic", new[] {
-                new Message("Hi Hello! Welcome to Kafka!") }).Wait();
+            Program.keepRunning = false;
+            Console.WriteLine("Unloading...");
         }
 
-        static void consumer()
+        static void CancelHandler(object sender, ConsoleCancelEventArgs e)
         {
-            var options = new KafkaOptions(new Uri("http://kafka:9092"));
-            var router = new BrokerRouter(options);
-            var consumer = new Consumer(new ConsumerOptions("testtopic",
-                new BrokerRouter(options)));
-
-            //Consume returns a blocking IEnumerable (ie: never ending stream)
-            foreach (var message in consumer.Consume())
-            {
-                Console.WriteLine("Response: P{0},O{1} : {2}",
-                    message.Meta.PartitionId, message.Meta.Offset,
-                    Encoding.UTF8.GetString(message.Value));
-            }
+            Program.keepRunning = false;
+            Console.WriteLine("Exiting...");
         }
 
         static void Main(string[] args)
         {
-            Program.producer();
-            Program.consumer();
-            //Console.ReadLine();
+            AssemblyLoadContext.Default.Unloading += SigTermEventHandler;
+            Console.CancelKeyPress += CancelHandler;
+
+			var machine = string.Format(@"{0}\{1}", Environment.MachineName, Environment.OSVersion);
+			Thread.Sleep(5000);
+
+			if (args[0] == "producer")
+			{
+				long counter = 0;
+				var key = args[1];
+				
+				do
+				{
+					counter++;
+					foreach(var k in key.Split(",".ToCharArray()))
+					{
+						var options = new KafkaOptions(new Uri("http://kafka:9092"));
+						options.PartitionSelector = new MyPartition(int.Parse(k));
+						var router = new BrokerRouter(options);
+						using(var client = new Producer(router))
+						{
+							client.SendMessageAsync("testtopic", new[] {
+								new Message("Hi Hello! Welcome to Kafka from " + machine + "!")}).Wait();
+							Console.WriteLine("Produced into " + k);
+						}
+					}
+					Thread.Sleep(1000);
+					if (args.Length >= 3 && counter >= int.Parse(args[2]))
+						break;
+				} while(Program.keepRunning);
+			}
+			else if (args[0] == "consumer")
+			{
+				var key = args[1];
+				var options = new KafkaOptions(new Uri("http://kafka:9092"));
+				var router = new BrokerRouter(options);
+				var consumerOptions = new ConsumerOptions("testtopic", new BrokerRouter(options));
+				foreach(var k in key.Split(",".ToCharArray()))
+					consumerOptions.PartitionWhitelist.Add(int.Parse(k));
+				using(var consumer = new Consumer(consumerOptions))
+				{
+					Console.WriteLine("Consumer({0}) setting up!", key);
+					//Consume is blocking; we are getting never ending stream
+					foreach (var message in consumer.Consume(/*ct*/))
+					{
+						Console.WriteLine("Consumer({0}): P{1},O{2} : {3}",
+							key, message.Meta.PartitionId, message.Meta.Offset,
+							Encoding.UTF8.GetString(message.Value));
+					}
+				}
+
+			}
+            Console.WriteLine("Finished!");
         }
     }
 }

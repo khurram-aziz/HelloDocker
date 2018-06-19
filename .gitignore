@@ -2,6 +2,7 @@
 /BAuth/bin
 /BAuth/obj
 /Kafka/.vs
+/Kafka/.vscode
 /Kafka/KafkaServer/kafka_2.11-1.1.0.tgz
 /Kafka/KafkaNetCoreConsole/.vs
 /Kafka/KafkaNetCoreConsole/bin

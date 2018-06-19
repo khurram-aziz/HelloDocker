@@ -5,7 +5,9 @@ FROM openjdk:9-jre
 ADD http://www-us.apache.org/dist/kafka/1.1.0/kafka_2.11-1.1.0.tgz /
 RUN tar xf kafka_2.11-1.1.0.tgz
 RUN rm kafka_2.11-1.1.0.tgz
+
 RUN mv /kafka_2.11-1.1.0 /kafka
 
+EXPOSE 9092
 # we will use entrypoint in docker-compose.yml
 ENTRYPOINT ["/bin/bash"]

@@ -20,14 +20,74 @@ services:
       - /kafka/bin/kafka-server-start.sh
       - /config/server.properties
   
-  kafkaapp:
-    # https://www.codeguru.com/csharp/.net/producer-and-consumer-for-kafka-in-.net-an-exploration.html
-    # https://www.infoworld.com/article/3215165/application-development/how-to-use-apache-kafka-messaging-in-net.html
-    # https://www.hugopicado.com/2017/11/22/getting-started-with-net-core-and-kafka.html
+  setup:
+    build:
+      context: KafkaServer/
+    image: khurramaziz/kafka
+    depends_on:
+      - kafka
+    volumes:
+      - ./wait.sh:/wait.sh
+    entrypoint:
+      - ./wait.sh
+    command: /kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 4 --topic testtopic
+
+  # test:
+  #   build:
+  #     context: KafkaServer/
+  #   image: khurramaziz/kafka
+  #   depends_on:
+  #     - kafka
+  #   volumes:
+  #     - ./wait.sh:/wait.sh
+  #   entrypoint:
+  #     - ./wait.sh
+  #   command: /kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181
+
+  p1:
+    build:
+      context: KafkaNetCoreConsole/
+    image: khurramaziz/kafkaapp
+    # restart: unless-stopped
+    # producer|consumer partition how-many-messages
+    command: producer 0 3
+    depends_on:
+      - kafka
+      - setup
+  p2:
+    build:
+      context: KafkaNetCoreConsole/
+    image: khurramaziz/kafkaapp
+    # restart: unless-stopped
+    command: producer 1,2 3
+    depends_on:
+      - kafka
+      - setup
+  p3:
+    build:
+      context: KafkaNetCoreConsole/
+    image: khurramaziz/kafkaapp
+    # restart: unless-stopped
+    command: producer 3 3
+    depends_on:
+      - kafka
+      - setup
+
+  c1:
     build:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp
     restart: unless-stopped
-    # command: producer
+    command: consumer 0
     depends_on:
       - kafka
+      - setup
+  c2:
+    build:
+      context: KafkaNetCoreConsole/
+    image: khurramaziz/kafkaapp
+    restart: unless-stopped
+    command: consumer 1,2,3
+    depends_on:
+      - kafka
+      - setup
