@@ -7,4 +7,4 @@ Use docker-compose up --build for single node Zookeeper/Kafka and Producer/Consu
 
 Stage builds; you dont need to install any build tools
 
-![Kafka .NET Core Console](KafkaNetCoreConsole?raw=true "Kafka .NET Core Console")
+![Kafka .NET Core Console](KafkaNetCoreConsole.png?raw=true "Kafka .NET Core Console")
