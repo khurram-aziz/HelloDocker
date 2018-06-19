@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="0.11.4" />
     <PackageReference Include="kafka-net-dotnetcore" Version="1.0.0" />
   </ItemGroup>
 
