@@ -13,7 +13,8 @@ services:
 
   # backtier, middletier (nginx)
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    # image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
     restart: unless-stopped
     networks:
       - backtier
@@ -26,7 +27,8 @@ services:
 
   # fronttier (ports), backtier
   logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.2.4
+    # image: docker.elastic.co/logstash/logstash-oss:6.2.4
+    image: docker.elastic.co/logstash/logstash:6.3.0
     restart: unless-stopped
     networks:
       - fronttier
@@ -43,7 +45,8 @@ services:
   
   # middletier (nginx)
   kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.2.4
+    # image: docker.elastic.co/kibana/kibana-oss:6.2.4
+    image: docker.elastic.co/kibana/kibana:6.3.0
     restart: unless-stopped
     networks:
       - middletier
@@ -56,7 +59,7 @@ services:
   bauth:
     build:
       context: ../BAuth/
-    image: bauth
+    image: khurramaziz/bauth
     restart: unless-stopped
     networks:
       - middletier

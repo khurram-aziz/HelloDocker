@@ -1,5 +1,6 @@
 # openjdk:10-jre and 11-jre giving error https://github.com/wurstmeister/kafka-docker/issues/151
 FROM openjdk:9-jre
+LABEL maintainer="khuziz@hotmail.com"
 
 # ADD kafka_2.11-1.1.0.tgz /
 ADD http://www-us.apache.org/dist/kafka/1.1.0/kafka_2.11-1.1.0.tgz /

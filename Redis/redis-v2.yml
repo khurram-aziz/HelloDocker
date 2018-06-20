@@ -7,7 +7,7 @@ services:
         build:
             context: RedisMvc
             dockerfile: Dockerfile
-        image: mvcapp
+        image: khurramaziz/mvcapp
         restart: unless-stopped
         ports:
             - 8000:80

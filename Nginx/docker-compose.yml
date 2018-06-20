@@ -6,7 +6,7 @@ services:
   nginx:
     build:
       context: .
-    image: nginscript
+    image: khurramaziz/nginscript
     restart: unless-stopped
     #command: [nginx-debug, '-g', 'daemon off;']
     volumes:

@@ -78,7 +78,7 @@ services:
   netcoreconsole:
     build:
       context: NetCoreConsole/
-    image: netcoreconsole
+    image: khurramaziz/prometheusapp
     restart: unless-stopped
     networks:
       - backtier
@@ -87,7 +87,7 @@ services:
   bauth:
     build:
       context: ../BAuth/
-    image: bauth
+    image: khurramaziz/bauth
     restart: unless-stopped
     networks:
       - middletier

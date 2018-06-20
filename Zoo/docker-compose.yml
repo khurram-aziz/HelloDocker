@@ -9,7 +9,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: dotnetapp
+        image: khurramaziz/zooapp
         #Name timeToLeaveHome timeToRoll timeToGasStation
         command: Charlie 10 20 25
         links:
@@ -18,7 +18,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: dotnetapp
+        image: khurramaziz/zooapp
         command: Mac 10 20 35
         links:
             - zoo
@@ -26,7 +26,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: dotnetapp
+        image: khurramaziz/zooapp
         command: Dennis 40 20 40
         links:
             - zoo
