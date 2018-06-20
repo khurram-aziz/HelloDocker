@@ -2,7 +2,6 @@
 using KafkaNet.Model;
 using KafkaNet.Protocol;
 using System;
-using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
 
@@ -25,33 +24,11 @@ namespace KafkaNetCoreConsole
 
     class KafkaNetProgram
     {
-        static bool keepRunning = true;
-
-        static void SigTermEventHandler(AssemblyLoadContext obj)
+        static public void KafkaNetMain(string machineID, string mode, string topic, string key, int? howMany)
         {
-            KafkaNetProgram.keepRunning = false;
-            Console.WriteLine("Unloading...");
-        }
-
-        static void CancelHandler(object sender, ConsoleCancelEventArgs e)
-        {
-            KafkaNetProgram.keepRunning = false;
-            Console.WriteLine("Exiting...");
-        }
-
-        static void KafkaNetMain(string[] args)
-        {
-            AssemblyLoadContext.Default.Unloading += SigTermEventHandler;
-            Console.CancelKeyPress += CancelHandler;
-
-            var machine = string.Format(@"{0}\{1}", Environment.MachineName, Environment.OSVersion);
-            Thread.Sleep(5000);
-
-            if (args[0] == "producer")
+            if (mode == "producer")
             {
                 long counter = 0;
-                var key = args[1];
-
                 do
                 {
                     counter++;
@@ -62,22 +39,21 @@ namespace KafkaNetCoreConsole
                         var router = new BrokerRouter(options);
                         using (var client = new Producer(router))
                         {
-                            client.SendMessageAsync("testtopic", new[] {
-                                new Message("Hi Hello! Welcome to Kafka from " + machine + "!")}).Wait();
+                            client.SendMessageAsync(topic, new[] {
+                                new Message($"Message {counter} from {machineID}")}).Wait();
                             Console.WriteLine("Produced into " + k);
                         }
                     }
                     Thread.Sleep(1000);
-                    if (args.Length >= 3 && counter >= int.Parse(args[2]))
+                    if (howMany.HasValue && counter >= howMany.Value)
                         break;
-                } while (KafkaNetProgram.keepRunning);
+                } while (Program.KeepRunning);
             }
-            else if (args[0] == "consumer")
+            else if (mode == "consumer")
             {
-                var key = args[1];
                 var options = new KafkaOptions(new Uri("http://kafka:9092"));
                 var router = new BrokerRouter(options);
-                var consumerOptions = new ConsumerOptions("testtopic", new BrokerRouter(options));
+                var consumerOptions = new ConsumerOptions(topic, new BrokerRouter(options));
                 foreach (var k in key.Split(",".ToCharArray()))
                     consumerOptions.PartitionWhitelist.Add(int.Parse(k));
                 using (var consumer = new Consumer(consumerOptions))
@@ -91,10 +67,8 @@ namespace KafkaNetCoreConsole
                             Encoding.UTF8.GetString(message.Value));
                     }
                 }
-
             }
             Console.WriteLine("Finished!");
-
         }
     }
 }

@@ -49,8 +49,8 @@ services:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp
     # restart: unless-stopped
-    # producer|consumer partition how-many-messages
-    command: producer 0 3
+    # producer|consumer topic partition how-many-messages
+    command: producer testtopic 0 3
     depends_on:
       - kafka
       - setup
@@ -59,7 +59,7 @@ services:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp
     # restart: unless-stopped
-    command: producer 1,2 3
+    command: producer testtopic 1,2 3
     depends_on:
       - kafka
       - setup
@@ -68,7 +68,7 @@ services:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp
     # restart: unless-stopped
-    command: producer 3 3
+    command: producer testtopic 3 3
     depends_on:
       - kafka
       - setup
@@ -78,7 +78,7 @@ services:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp
     restart: unless-stopped
-    command: consumer 0
+    command: consumer testtopic 0
     depends_on:
       - kafka
       - setup
@@ -87,7 +87,7 @@ services:
       context: KafkaNetCoreConsole/
     image: khurramaziz/kafkaapp
     restart: unless-stopped
-    command: consumer 1,2,3
+    command: consumer testtopic 1,2,3
     depends_on:
       - kafka
       - setup
