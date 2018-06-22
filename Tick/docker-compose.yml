@@ -1,0 +1,29 @@
+version: '2.0'
+
+# volumes:
+#   influxdb: {}
+#   chronograf: {}
+
+services:
+
+  influxdb:
+    image: influxdb
+    restart: unless-stopped
+    volumes:
+      - ./influxdb.conf:/etc/influxdb/influxdb.conf
+      # - influxdb:/var/lib/influxdb
+    ports:
+      - 8086:8086
+      - 8888:8888/udp
+
+  chronograf:
+    image: chronograf
+    restart: unless-stopped
+    # volumes:
+    #   - chronograf:/var/lib/chronograf
+    environment:
+      INFLUXDB_URL: http://influxdb:8086
+    depends_on:
+      - influxdb
+    ports:
+      - 8888:8888
