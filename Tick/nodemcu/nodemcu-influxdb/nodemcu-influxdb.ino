@@ -56,7 +56,7 @@ void loop() {
   if (cValue != temp) { //lets send only when its changed
     temp = cValue;
     
-    String line = "temperature,device=" + String(mdnsName) + ",localip=" + String(WiFi.localIP()) + " value=" + String(temp, 2);
+    String line = "temperature,device=" + String(mdnsName) + ",localIP=" + WiFi.localIP().toString() + ",sensorValue=" + String(sensorValue) + " value=" + String(temp, 2);
     udp.beginPacket(host, port);
     udp.print(line);
     udp.endPacket();
