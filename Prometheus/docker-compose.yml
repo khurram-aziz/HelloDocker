@@ -70,7 +70,6 @@ services:
     volumes:
       - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./dashboards:/etc/grafana/provisioning/dashboards
-      - ./dashboards/first.json:/etc/grafana/provisioning/dashboards/first.json
     # ports:
     #   - 90:3000
 
