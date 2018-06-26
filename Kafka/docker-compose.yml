@@ -32,6 +32,24 @@ services:
       - ./wait.sh
     command: /kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 4 --topic testtopic
 
+  # zookeeperwebui:
+  #   image: tobilg/zookeeper-webui
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - zookeeper
+  #   environment:
+  #     - ZK_DEFAULT_NODE=zookeeper:2181
+  #   ports:
+  #     - 90:8080
+  
+  # kafkawebui:
+  #   image: hwestphal/kafka-web-console
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - kafka
+  #   ports:
+  #     - 91:9000
+  
   # test:
   #   build:
   #     context: KafkaServer/

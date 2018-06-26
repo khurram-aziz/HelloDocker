@@ -31,7 +31,7 @@ namespace KafkaNetCoreConsole
                         {
                             producer.ProduceAsync(topic, null /*key*/, text, int.Parse(k));
                             producer.Flush(100);
-                            Console.WriteLine("Produced into " + k);
+                            Console.WriteLine($"Produced {counter} into {k}");
                         }
                     }
 
@@ -49,7 +49,7 @@ namespace KafkaNetCoreConsole
                     { "enable.auto.commit", "false" },
                     //{ "statistics.interval.ms", 60000 }, //we have subscribed to stats below
                     //{ "auto.commit.interval.ms", 5000 },
-                    { "auto.offset.reset", "earliest" } // smallest: each time from begining; earliest: will resume from failed
+                    { "auto.offset.reset", "smallest" } // smallest; earliest
                 };
                 using (var consumer = new Consumer<Null, string>(
                     config, null /*keyDeserializer*/,
@@ -58,15 +58,29 @@ namespace KafkaNetCoreConsole
                     Console.WriteLine("Consumer({0}) setting up!", key);
 
                     long counter = 0;
-                    var ps = new List<TopicPartition>();
-                    foreach (var k in key.Split(",".ToCharArray()))
-                        ps.Add(new TopicPartition(topic, int.Parse(k)));
 
                     //if we dont subscribe to this event; assigned partitions are passed to consumer automatically
                     consumer.OnPartitionsAssigned += (_, partitions) =>
                     {
-                        Console.WriteLine("Assigning " + key + " to consumer!");
-                        consumer.Assign(ps.ToArray());
+                        if (!string.IsNullOrEmpty(key))
+                        {
+                            Console.WriteLine($"Assigning {key} to consumer!");
+                            var ps = new List<TopicPartition>();
+                            foreach (var k in key.Split(",".ToCharArray()))
+                                ps.Add(new TopicPartition(topic, int.Parse(k)));
+                            consumer.Assign(ps.ToArray());
+                        }
+                        else
+                        {
+                            string pstr = "";
+                            foreach(var p in partitions)
+                            {
+                                pstr += p.Partition.ToString();
+                                if (!string.IsNullOrEmpty(pstr))
+                                    pstr += ",";
+                            }
+                            Console.WriteLine($"Server assigned {key} to consumer!");
+                        }
                     };
                     consumer.OnStatistics += (_, json) => Console.WriteLine($"Statistics: {json}");
                     //consumer.OnPartitionsRevoked += (_, partitions) => consumer.Unassign();
@@ -80,10 +94,8 @@ namespace KafkaNetCoreConsole
                         // we can simulate failure here; if (counter >= 2) Environment.Exit(-1);
                         consumer.CommitAsync(msg);
                     };
-                    consumer.OnError += (_, error)
-                        => Console.WriteLine($"Error: {error}");
-                    consumer.OnConsumeError += (_, msg)
-                        => Console.WriteLine($"Consume error ({msg.TopicPartitionOffset}): {msg.Error}");
+                    consumer.OnError += (_, error)  => Console.WriteLine($"Error: {error}");
+                    consumer.OnConsumeError += (_, msg) => Console.WriteLine($"Consume error ({msg.TopicPartitionOffset}): {msg.Error}");
                     consumer.Subscribe(new string[] { topic });
 
                     while (Program.KeepRunning)

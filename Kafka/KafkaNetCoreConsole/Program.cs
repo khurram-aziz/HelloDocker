@@ -29,12 +29,13 @@ namespace KafkaNetCoreConsole
             var machine = string.Format(@"{0}\{1}", Environment.MachineName, Environment.OSVersion);
             var mode = args[0];     //producer|consumer
             var topic = args[1];
-            var key = args[2];      //partitions eg 0 1,2
+            string key = "";        //partitions eg 0 1,2
+            if (args.Length >= 3) key = args[2];
             int? howMany = null;
             if (args.Length >= 4) howMany = int.Parse(args[3]);
 
-            Thread.Sleep(5000); //let zookeeper + kafka come online
-            Thread.Sleep(5000); //let setup initialize the topic
+            Thread.Sleep(10000); //let zookeeper + kafka come online
+            Thread.Sleep(10000); //let setup initialize the topic
             ConfluentKafkaProgram.ConfluentKafkaMain(machine, mode, topic, key, howMany);
         }
     }
