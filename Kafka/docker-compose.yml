@@ -1,10 +1,18 @@
 version: '2.0'
 
+volumes:
+  zookeeper: {}
+  zookeeperlog: {}
+  kafka: {}
+
 services:
 
   zookeeper:
     image: zookeeper
     restart: unless-stopped
+    volumes:
+      - zookeeper:/data
+      - zookeeperlog:/datalog
   
   kafka:
     build:
@@ -16,6 +24,7 @@ services:
     # https://kafka.apache.org/quickstart
     volumes:
       - ./kafka-server.properties:/config/server.properties
+      - kafka:/data
     entrypoint:
       - /kafka/bin/kafka-server-start.sh
       - /config/server.properties

@@ -58,30 +58,33 @@ namespace KafkaNetCoreConsole
                     Console.WriteLine("Consumer({0}) setting up!", key);
 
                     long counter = 0;
-
-                    //if we dont subscribe to this event; assigned partitions are passed to consumer automatically
-                    consumer.OnPartitionsAssigned += (_, partitions) =>
+                    
+                    if (!string.IsNullOrEmpty(key))
                     {
-                        if (!string.IsNullOrEmpty(key))
+                    //if we dont subscribe to this event; assigned partitions are passed to consumer automatically
+                        consumer.OnPartitionsAssigned += (_, partitions) =>
                         {
-                            Console.WriteLine($"Assigning {key} to consumer!");
-                            var ps = new List<TopicPartition>();
-                            foreach (var k in key.Split(",".ToCharArray()))
-                                ps.Add(new TopicPartition(topic, int.Parse(k)));
-                            consumer.Assign(ps.ToArray());
-                        }
-                        else
-                        {
-                            string pstr = "";
-                            foreach(var p in partitions)
+                            if (!string.IsNullOrEmpty(key))
                             {
-                                pstr += p.Partition.ToString();
-                                if (!string.IsNullOrEmpty(pstr))
-                                    pstr += ",";
+                                Console.WriteLine($"Assigning {key} to consumer!");
+                                var ps = new List<TopicPartition>();
+                                foreach (var k in key.Split(",".ToCharArray()))
+                                    ps.Add(new TopicPartition(topic, int.Parse(k)));
+                                consumer.Assign(ps.ToArray());
                             }
-                            Console.WriteLine($"Server assigned {key} to consumer!");
-                        }
-                    };
+                            else
+                            {
+                                string pstr = "";
+                                foreach(var p in partitions)
+                                {
+                                    pstr += p.Partition.ToString();
+                                    if (!string.IsNullOrEmpty(pstr))
+                                        pstr += ",";
+                                }
+                                Console.WriteLine($"Server assigned {key} to consumer!");
+                            }
+                        };
+                    }
                     consumer.OnStatistics += (_, json) => Console.WriteLine($"Statistics: {json}");
                     //consumer.OnPartitionsRevoked += (_, partitions) => consumer.Unassign();
 
