@@ -9,7 +9,7 @@ namespace Net4Console
     public class StatusController : ApiController
     {
         public static int Counter = 0;
-        public static int Gauge = 0;
+        public static float Gauge = 0;
 
         public HttpResponseMessage Get()
         {
@@ -27,7 +27,7 @@ namespace Net4Console
         public HttpResponseMessage Metrics()
         {
             StatusController.Counter++;
-            StatusController.Gauge = new Random().Next(0, 1000);
+            StatusController.Gauge = (float)(new Random().Next(0, 100000)) / (float)(new Random().Next(1, 100));
 
             var sb = new StringBuilder();
 
