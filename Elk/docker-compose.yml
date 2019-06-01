@@ -6,30 +6,42 @@ version: '2'
 services:
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+    container_name: elasticsearch
     restart: unless-stopped
     volumes:
       # - elasticsearch:/usr/share/elasticsearch/data
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     # we dont need to expose it unless we want to access it directly
-    # ports:
-    #   - "90:9200"
+    ports:
+      - "90:9200"
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.0.0
+    image: docker.elastic.co/logstash/logstash:7.1.1
+    container_name: logstash
     restart: unless-stopped
     depends_on:
       - elasticsearch
     volumes:
-      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+      # - ./logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash-hello.conf:/usr/share/logstash/pipeline/logstash-hello.conf
+      - ./logstash-syslog.conf:/usr/share/logstash/pipeline/logstash-syslog.conf
     ports:
-    - 5000:5000/udp
+      - 5000:5000/udp
+      # 5044 beats
+      # 9600 https://www.elastic.co/guide/en/logstash/current/monitoring.html
+
   
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.0.0
+    image: docker.elastic.co/kibana/kibana:7.1.1
+    container_name: kibana
     restart: unless-stopped
     depends_on:
       - elasticsearch
+    # environment:
+    #   ELASTICSEARCH_HOSTS: http://elasticsearch:9200 # its default anyways
+    # Use environemnt or kibana.yml; https://www.elastic.co/guide/en/kibana/7.0/settings.html
+    # volumes:
+    #   - ./kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - "80:5601"
